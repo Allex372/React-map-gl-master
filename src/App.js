@@ -66,7 +66,8 @@ function App() {
                         <h2>{selectedPark.properties.name}</h2>
                         <p>{selectedPark.properties.area}</p>
                         <button className='apple-maps'><a href={`comgooglemaps://?center=${[selectedPark.geometry.coordinates[0][0][0][0],selectedPark.geometry.coordinates[0][0][0][1]]}&zoom=14&views=traffic`}>Open in Apple Maps</a></button>
-                        <button className='google-maps'><a href='/'>Open in Google Maps</a></button>
+                        <button className='google-maps'><a href={`//maps.apple.com/?q=${[selectedPark.geometry.coordinates[0][0][0][1],selectedPark.geometry.coordinates[0][0][0][0]]}`}>Open in Google Maps</a></button>
+                        { console.log([selectedPark.geometry.coordinates[0][0][0][0],selectedPark.geometry.coordinates[0][0][0][1]]) }
 
                     </div>
                 </Popup>
