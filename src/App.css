@@ -48,6 +48,12 @@
   height: 40px;
 }
 
+.wrapper{
+  height: 60%;
+  width: 100%;
+  display: flex;
+}
+
 .apple-maps{
   height: 50px;
   width: 150px;
@@ -60,4 +66,16 @@
   width: 150px;
   font-size: 15px;
   background-color: red;
+}
+
+.marker-img{
+  width: 60px;
+  height: 40px;
+}
+
+.move{
+  height: 50px;
+  width: 150px;
+  font-size: 15px;
+  background-color: blue;
 }
