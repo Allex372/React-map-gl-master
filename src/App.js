@@ -17,9 +17,55 @@ function App() {
         zoom: 10
     })
 
-    const [marker, setMarker] = useState({
-        latitude: null,
-        longitude: null
+    let [parks, setParks] = useState([
+        {
+            id: 1,
+            name: "Регіональний ландшафтний парк “Знесіння“",
+            area: "312,1 га",
+            longitude: 24.06609218467404,
+            latitude: 49.85231953495459
+        },
+        {
+            id: 2,
+            name: "Парк-пам’ятка садово-паркового мистецтва місцевого значення↵“Залізна Вода“",
+            area: "19,5 га",
+            longitude: 24.035978761977706,
+            latitude: 49.82119878452948
+        },
+        {
+            id: 3,
+            name: "Парк “Горіховий гай“",
+            area: "35,5 га",
+            longitude: 24.010021812034985,
+            latitude: 49.81551628110055
+        },
+        {
+            id: 4,
+            name: "Парк “700-річчя Львова“",
+            area: "22,09 га",
+            longitude: 24.01887346804171,
+            latitude: 49.86245184778529
+        },
+        {
+            id: 5,
+            name: "Парк ім. Папи Римського Івана Павла ІІ",
+            area: "97,9 га",
+            longitude: 24.05489787933887,
+            latitude: 49.793672930994525
+        },
+        {
+            id: 6,
+            name: "Центральний парк культури і відпочинку↵ім. Б. Хмельницького",
+            area: "26 га",
+            longitude: 24.019285518824386,
+            latitude: 49.830638412963985
+        },
+    ]);
+
+    let [marker, setMarker] = useState({
+        id: null,
+        longitude: null,
+        latitude: null
     });
 
     const [selectedPark, setSelectedPark] = useState(null)
@@ -27,20 +73,72 @@ function App() {
 
     const [events, logEvents] = useState({});
 
-    const onMarkerDragEnd = useCallback(event => {
-        logEvents(_events => ({..._events, onDragEnd: event.lngLat}));
-        setMarker({
+    useEffect(() => console.log(parks), [parks]);
+
+    useEffect(() => selectedPark && setMarker((prevState) => ({...prevState, id: selectedPark.id})), [selectedPark]);
+
+    // const onMarkerDragStart = useCallback(event => {
+    //     logEvents(_events => ({..._events, onDragStart: event.lngLat}));
+    // }, []);
+    //
+    // const onMarkerDrag = useCallback(event => {
+    //     logEvents(_events => ({..._events, onDrag: event.lngLat}));
+    // }, []);
+    //
+    // const onMarkerDragEnd = useCallback(event => {
+    //     logEvents(_events => ({..._events, onDragEnd: event.lngLat}));
+    //     setMarker({
+    //         longitude: event.lngLat[0],
+    //         latitude: event.lngLat[1]
+    //     });
+    // }, []);
+
+    function Park() {
+        parks.map(park => {
+            if (park.id === marker.id && marker.latitude != null && marker.longitude!= null){
+                park.latitude = marker.latitude;
+                park.longitude = marker.longitude;
+            }
+        })
+    }
+
+    // const onMarkerDragStart = useCallback(event => {
+    //     logEvents(_events => ({..._events, onDragStart: event.lngLat}));
+    //     console.log(event, 'START')
+    //     console.log(marker)
+    // }, []);
+
+    const onMarkerDrag = useCallback(event => {
+        logEvents(_events => ({..._events, onDrag: event.lngLat}));
+        console.log(event, 'DRAG')
+        setMarker(prevState => ({
+            ...prevState,
             longitude: event.lngLat[0],
             latitude: event.lngLat[1]
-        });
+        }));
     }, []);
 
-    useEffect(()=> console.log(draggable), [draggable])
+    const onMarkerDragEnd = useCallback((event) => {
+        logEvents(_events => ({..._events, onDragEnd: event.lngLat}));
+        setMarker(prevState => ({
+            id: null,
+            longitude: null,
+            latitude: null
+        }));
+    }, [marker]);
+
 
     function moveMarker() {
         const change = !draggable;
         setDraggable(change)
     }
+
+    useEffect(() => console.log(marker, 'marker'), [marker])
+
+
+    useEffect(() => {
+        Park();
+    }, [marker])
 
 
 
@@ -52,48 +150,45 @@ function App() {
             onViewportChange={viewport => {
                 setViewport(viewport)
             }}>
-
-
             {
-                parkData.features.map(water => (
-                    <Marker draggable={draggable}
-                            offsetTop={-20}
-                            offsetLeft={-10}
-                            onDragEnd={onMarkerDragEnd}
-                            longitude={marker.longitude?marker.longitude:water.geometry.coordinates[0][0][0][0]}
-                            latitude={marker.latitude?marker.latitude:water.geometry.coordinates[0][0][0][1]}
-                            key={water.properties.id}>
-                        <button className='marker-btn'
-                                onClick={event => {
-                                    event.preventDefault()
-                                    setSelectedPark(water)
-                                }}>
-                            {/*<img src={marker_img} alt='marker-of-water'/>*/}
-                            <Pin size={30} />
-                        </button>
-                    </Marker>
-                ))
-            }
+                parks.map(park =>
+                <Marker draggable={draggable}
+                        offsetTop={-20}
+                        offsetLeft={-10}
+                        // onDragStart={onMarkerDragStart}
+                        onDrag={onMarkerDrag}
+                        onDragEnd={onMarkerDragEnd}
+                        longitude={park.longitude}
+                        latitude={park.latitude}
+                        key={park.id}>
+                    <button className='marker-btn'
+                            onClick={event => {
+                                event.preventDefault()
+                                setSelectedPark(park)
+                            }}>
+                        <Pin size={30}/>
+                    </button>
+                </Marker>
 
-
+                )}
             {selectedPark ? (
-                <Popup longitude={marker.longitude?marker.longitude:selectedPark.geometry.coordinates[0][0][0][0]}
-                       latitude={marker.latitude?marker.latitude:selectedPark.geometry.coordinates[0][0][0][1]}
+                <Popup longitude={selectedPark.longitude}
+                       latitude={selectedPark.latitude}
                        onClose={() => {
                            setSelectedPark(null)
                        }}
                 >
                     <div>
-                        <h2>{selectedPark.properties.name}</h2>
-                        <p>{selectedPark.properties.area}</p>
+                        <h2>{selectedPark.name}</h2>
+                        <p>{selectedPark.area}</p>
                         <div className='wrapper'>
                             <button className='apple-maps'><a
-                                href={`comgooglemaps://?center=${[selectedPark.geometry.coordinates[0][0][0][0], selectedPark.geometry.coordinates[0][0][0][1]]}&zoom=14&views=traffic`}>Open
+                                href={`comgooglemaps://?center=${[selectedPark.longitude, selectedPark.latitude]}&zoom=14&views=traffic`}>Open
                                 in Apple Maps</a></button>
                             <button className='google-maps'><a
-                                href={`//maps.apple.com/?q=${[selectedPark.geometry.coordinates[0][0][0][1], selectedPark.geometry.coordinates[0][0][0][0]]}`}>Open
+                                href={`//maps.apple.com/?q=${[selectedPark.latitude, selectedPark.longitude]}`}>Open
                                 in Google Maps</a></button>
-                            <button className='move' onClick={moveMarker}>{draggable?'Save': 'Move'} Point</button>
+                            <button className='move' onClick={moveMarker}>{draggable ? 'Save' : 'Move'} Point</button>
                         </div>
 
                     </div>

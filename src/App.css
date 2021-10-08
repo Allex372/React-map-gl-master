@@ -58,14 +58,14 @@
   height: 50px;
   width: 150px;
   font-size: 15px;
-  background-color: #61dafb;
+  background-color: olive;
 }
 
 .google-maps{
   height: 50px;
   width: 150px;
   font-size: 15px;
-  background-color: red;
+  background-color: orange;
 }
 
 .marker-img{
@@ -77,5 +77,5 @@
   height: 50px;
   width: 150px;
   font-size: 15px;
-  background-color: blue;
+  background-color: purple;
 }
