@@ -1,8 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import ReactMapGL, {Marker, Popup} from 'react-map-gl';
-import * as parkData from './data/Public_data.json';
 import './App.css';
-import marker_img from './img/marker.png';
 import Pin from "./Pin";
 
 
@@ -73,25 +71,7 @@ function App() {
 
     const [events, logEvents] = useState({});
 
-    useEffect(() => console.log(parks), [parks]);
-
     useEffect(() => selectedPark && setMarker((prevState) => ({...prevState, id: selectedPark.id})), [selectedPark]);
-
-    // const onMarkerDragStart = useCallback(event => {
-    //     logEvents(_events => ({..._events, onDragStart: event.lngLat}));
-    // }, []);
-    //
-    // const onMarkerDrag = useCallback(event => {
-    //     logEvents(_events => ({..._events, onDrag: event.lngLat}));
-    // }, []);
-    //
-    // const onMarkerDragEnd = useCallback(event => {
-    //     logEvents(_events => ({..._events, onDragEnd: event.lngLat}));
-    //     setMarker({
-    //         longitude: event.lngLat[0],
-    //         latitude: event.lngLat[1]
-    //     });
-    // }, []);
 
     function Park() {
         parks.map(park => {
@@ -102,11 +82,6 @@ function App() {
         })
     }
 
-    // const onMarkerDragStart = useCallback(event => {
-    //     logEvents(_events => ({..._events, onDragStart: event.lngLat}));
-    //     console.log(event, 'START')
-    //     console.log(marker)
-    // }, []);
 
     const onMarkerDrag = useCallback(event => {
         logEvents(_events => ({..._events, onDrag: event.lngLat}));
@@ -132,8 +107,6 @@ function App() {
         const change = !draggable;
         setDraggable(change)
     }
-
-    useEffect(() => console.log(marker, 'marker'), [marker])
 
 
     useEffect(() => {
